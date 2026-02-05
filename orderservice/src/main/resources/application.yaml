@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: orderservice
+aws:
+  region: ${AWS_REGION}
+sns:
+  topicArn: ${SNS_TOPIC_ARN}
+dynamodb:
+  ordersTable: ${ORDERS_TABLE}
