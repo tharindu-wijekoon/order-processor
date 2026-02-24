@@ -1,9 +1,13 @@
 package com.tharindu.orderservice.service;
 
 import com.tharindu.orderservice.dto.CreateOrderRequest;
+
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sns.model.MessageAttributeValue;
 import software.amazon.awssdk.services.sns.model.PublishRequest;
 
 @Service
@@ -33,6 +37,12 @@ public class OrderEventPublisher {
         PublishRequest request = PublishRequest.builder()
                 .topicArn(topicArn)
                 .message(payload)
+                .messageAttributes(Map.of(
+                    "eventType", MessageAttributeValue.builder()
+                        .dataType("String")
+                        .stringValue("OrderCreated")
+                        .build()
+                ))
                 .build();
 
         snsClient.publish(request);
