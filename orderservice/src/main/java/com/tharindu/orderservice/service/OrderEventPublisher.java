@@ -13,6 +13,7 @@ import software.amazon.awssdk.services.sns.model.PublishRequest;
 @Service
 public class OrderEventPublisher {
     private final SnsClient snsClient;
+    // Get the topic arn from application.yaml
     @Value("${sns.topicArn}")
     private String topicArn;
 
@@ -21,6 +22,7 @@ public class OrderEventPublisher {
     }
 
     public void publishOrderCreated(CreateOrderRequest order) {
+        // Create the message payload as a JSON string
         String payload = """
                 {
                     "eventType": "OrderCreated",
@@ -34,9 +36,11 @@ public class OrderEventPublisher {
                     order.getEmail()
                 );
 
+        // Create the PublishRequest with message attributes
         PublishRequest request = PublishRequest.builder()
                 .topicArn(topicArn)
                 .message(payload)
+                // Add message attributes to indicate the event type for easy filtering by subscribers
                 .messageAttributes(Map.of(
                     "eventType", MessageAttributeValue.builder()
                         .dataType("String")
@@ -45,6 +49,7 @@ public class OrderEventPublisher {
                 ))
                 .build();
 
+        // Publish the message to SNS
         snsClient.publish(request);
     }
 }

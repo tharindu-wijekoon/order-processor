@@ -12,6 +12,7 @@ import java.util.Map;
 @Repository
 public class OrderRepository {
     private final DynamoDbClient dynamoDbClient;
+    // Get the value from application.yaml
     @Value("${dynamodb.ordersTable}")
     private String tableName;
 
@@ -19,18 +20,23 @@ public class OrderRepository {
         this.dynamoDbClient = dynamoDbClient;
     }
 
+    // Save order to DynamoDB
     public void save(CreateOrderRequest order) {
+        // Map the order to DynamoDB item format
         Map<String, AttributeValue> item = Map.of(
+                // orderId is the partition key in DynamoDB
                 "orderId", AttributeValue.fromS(order.getOrderId()),
                 "amount", AttributeValue.fromN(order.getAmount().toString()),
                 "email", AttributeValue.fromS(order.getEmail())
         );
 
+        // Create the PutItemRequest
         PutItemRequest request = PutItemRequest.builder()
                 .tableName(tableName)
                 .item(item)
                 .build();
 
-       dynamoDbClient.putItem(request);
+        // Put the item into DynamoDB
+        dynamoDbClient.putItem(request);
     }
 }

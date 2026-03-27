@@ -16,6 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
     private final OrderService orderService;
 
+    // Endpoint to create a new order
+    // Accepts a CreateOrderRequest in the request body and returns a 201 Created response if successful
+    // Example request body:
+    // {
+    //   "orderId": "12345",
+    //   "amount": 100,
+    //   "email": "customer@example.com"
+    // }
     @PostMapping
     public ResponseEntity<String> createOrder(@RequestBody CreateOrderRequest request) {
         orderService.createOrder(request);
